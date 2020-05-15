@@ -9,10 +9,13 @@ class Cov19:
         self.df_recovered = None
         self.get_updated_datasets()
 
-        self.df_confirmed_total = None
-        self.df_deaths_total = None
-        self.df_recovered_total = None
+        self.df_confirmed_daily = None
+        self.df_deaths_daily = None
+        self.df_recovered_daily = None
         self.total_case_agg()
+        self.df_confirmed_total = self.df_confirmed_daily.cumsum()
+        self.df_deaths_total = self.df_deaths_daily.cumsum()
+        self.df_recovered_total = self.df_recovered_daily.cumsum()
 
         self.df_deaths_confirmed_sorted_total = None
         self.df_recovered_sorted_total = None
@@ -47,9 +50,9 @@ class Cov19:
         df_confirmed_total = self.df_confirmed.iloc[:, 4:].sum(axis=0)
         df_deaths_total = self.df_deaths.iloc[:, 4:].sum(axis=0)
         df_recovered_total = self.df_recovered.iloc[:, 4:].sum(axis=0)
-        self.df_confirmed_total = df_confirmed_total
-        self.df_deaths_total = df_deaths_total
-        self.df_recovered_total = df_recovered_total
+        self.df_confirmed_daily = df_confirmed_total
+        self.df_deaths_daily = df_deaths_total
+        self.df_recovered_daily = df_recovered_total
 
     def preprocessing_req_info(self):
         df_deaths_confirmed = self.df_deaths.copy()

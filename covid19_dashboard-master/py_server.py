@@ -48,12 +48,61 @@ def recovTot():
     return _corsify_actual_response(jsonify(data))
 
 
+def lineChartDaily():
+    conf = c19.df_confirmed_daily
+    death = c19.df_deaths_daily
+    reco = c19.df_recovered_daily
+
+    if (list(conf.index.values) == list(death.index.values) == list(reco.index.values)):
+        print("plot indexes are equal")
+        data={'dates': (list(conf.index.values)),
+              'conf': conf.tolist(),
+              'death': death.tolist(),
+              'recovered': reco.tolist()}
+        return _corsify_actual_response(jsonify(data))
+    else:
+        print(len(list(conf.index.values)))
+        print(len(list(death.index.values)))
+        print(len(list(reco.index.values)))
+        data = {'dates': [],
+                'conf': [],
+                'death': [],
+                'recovered': []}
+        return _corsify_actual_response(jsonify(data))
+
+def lineChartCumulative():
+    conf = c19.df_confirmed_total
+    death = c19.df_deaths_total
+    reco = c19.df_recovered_total
+
+    if (list(conf.index.values) == list(death.index.values) == list(reco.index.values)):
+        print("plot indexes are equal")
+        data={'dates': (list(conf.index.values)),
+              'conf': conf.tolist(),
+              'death': death.tolist(),
+              'recovered': reco.tolist()}
+        return _corsify_actual_response(jsonify(data))
+    else:
+        print(len(list(conf.index.values)))
+        print(len(list(death.index.values)))
+        print(len(list(reco.index.values)))
+        data = {'dates': [],
+                'conf': [],
+                'death': [],
+                'recovered': []}
+        return _corsify_actual_response(jsonify(data))
+
+
 app.add_url_rule('' + '/top10ConfirmrdCountries', 'top10ConfirmrdCountries', top10ConfirmrdCountries, methods=['OPTIONS','POST','GET'])
 app.add_url_rule('' + '/top10DeceasedCountries', 'top10DeceasedCountries', top10DeceasedCountries, methods=['OPTIONS','POST','GET'])
 # app.add_url_rule('' + '/confTot', 'confTot', confTot, methods=['OPTIONS','POST','GET'])
 # app.add_url_rule('' + '/deathTot', 'deathTot', deathTot, methods=['OPTIONS','POST','GET'])
 # app.add_url_rule('' + '/recovTot', 'recovTot', recovTot, methods=['OPTIONS','POST','GET'])
 app.add_url_rule('' + '/totalValues', 'totalValues', totalValues, methods=['OPTIONS','POST','GET'])
+app.add_url_rule('' + '/lineChartDaily', 'lineChartDaily', lineChartDaily, methods=['OPTIONS','POST','GET'])
+app.add_url_rule('' + '/lineChartCumulative', 'lineChartCumulative', lineChartCumulative, methods=['OPTIONS','POST','GET'])
+
+
 
 if __name__=='__main__':
     c19 = Cov19()
