@@ -12,10 +12,13 @@ class Cov19:
         self.df_confirmed_daily = None
         self.df_deaths_daily = None
         self.df_recovered_daily = None
+        self.df_confirmed_total = None
+        self.df_deaths_total = None
+        self.df_recovered_total = None
         self.total_case_agg()
-        self.df_confirmed_total = self.df_confirmed_daily.cumsum()
-        self.df_deaths_total = self.df_deaths_daily.cumsum()
-        self.df_recovered_total = self.df_recovered_daily.cumsum()
+
+
+
 
         self.df_deaths_confirmed_sorted_total = None
         self.df_recovered_sorted_total = None
@@ -26,10 +29,12 @@ class Cov19:
         self.preprocessing_req_info()
 
     def get_updated_datasets(self):
+        # url_all = 'https://data.world/covid-19-data-resource-hub/covid-19-case-counts/workspace/file?filename=COVID-19+Cases.csv'
         url_confirmed = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv'
         url_deaths = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv'
         url_recovered = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'
 
+        # df_all = pd.read_csv(url_all)
         df_confirmed = pd.read_csv(url_confirmed)
         df_deaths = pd.read_csv(url_deaths)
         df_recovered = pd.read_csv(url_recovered)
@@ -50,9 +55,18 @@ class Cov19:
         df_confirmed_total = self.df_confirmed.iloc[:, 4:].sum(axis=0)
         df_deaths_total = self.df_deaths.iloc[:, 4:].sum(axis=0)
         df_recovered_total = self.df_recovered.iloc[:, 4:].sum(axis=0)
-        self.df_confirmed_daily = df_confirmed_total
-        self.df_deaths_daily = df_deaths_total
-        self.df_recovered_daily = df_recovered_total
+        self.df_confirmed_total = df_confirmed_total
+        self.df_deaths_total = df_deaths_total
+        self.df_recovered_total = df_recovered_total
+
+        self.df_confirmed_daily = df_confirmed_total.sub(df_confirmed_total.shift())
+        self.df_confirmed_daily.iloc[0] = df_confirmed_total.iloc[0]
+
+        self.df_deaths_daily = df_deaths_total.sub(df_deaths_total.shift())
+        self.df_deaths_daily.iloc[0] = df_deaths_total.iloc[0]
+
+        self.df_recovered_daily = df_recovered_total.sub(df_recovered_total.shift())
+        self.df_recovered_daily.iloc[0] = df_recovered_total.iloc[0]
 
     def preprocessing_req_info(self):
         df_deaths_confirmed = self.df_deaths.copy()
